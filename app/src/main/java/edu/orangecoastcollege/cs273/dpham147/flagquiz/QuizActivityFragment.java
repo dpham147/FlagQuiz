@@ -1,9 +1,13 @@
 package edu.orangecoastcollege.cs273.dpham147.flagquiz;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -215,7 +219,36 @@ public class QuizActivityFragment extends Fragment {
                 answerTextView.setText(answer + "!");,,
                 answerTextView.setTextColor(getResources().getColor(R.color.correct_answer,
                         getContext().getTheme()));
+
+                disableButtons(); // disable guess buttons
+
+                // if the user has correctly identified FLAGS_IN_QUIZ flags
+                if (correctAnswers == FLAGS_IN_QUIZ) {
+                    // Dialogfragment to display quiz results and start a new quiz
+                    DialogFragment quizResults =
+                            new DialogFragment() {
+                                // create an alert dialog and return it
+                                @Override
+                                public Dialog onCreateDialog(Bundle bundle) {
+                                    AlertDialog.Builder builder =
+                                            new AlertDialog.Builder(getActivity());
+                                    builder.setMessage(getString(R.string.results,
+                                            totalGuesses, (1000 / (double) totalGuesses)));
+
+                                    // reset quiz button
+                                    builder.setPositiveButton(R.string.reset_quiz,
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id){
+                                                    resetQuiz();
+                                                }
+                                            }
+                                    );
+
+                                    return builder.create();
+                                }
+                            };
+                }
             }
         }
-    }
+    };
 }

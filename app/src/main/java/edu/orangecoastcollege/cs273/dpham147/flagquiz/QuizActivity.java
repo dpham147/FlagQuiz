@@ -88,8 +88,8 @@ public class QuizActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private onSharedPreferenceChangeListener preferencesChangeListener =
-            new onSharedPreferenceChangeListener() {
+    private SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(
                     SharedPreferences sharedPreferences, String key) {
