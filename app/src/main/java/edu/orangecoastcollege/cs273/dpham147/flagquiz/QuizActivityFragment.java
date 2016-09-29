@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.os.Handler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Handler;
+
 
 /**
  * QuizActivityFragment contains the Flag Quiz Logic
@@ -92,12 +93,12 @@ public class QuizActivityFragment extends Fragment {
         guessRows = Integer.parseInt(choices) / 2;
 
         // hide all guess button Linear Layouts
-        for (LinearLayout layout : guessLinearLayouts){
+        for (LinearLayout layout : guessLinearLayouts) {
             layout.setVisibility(View.GONE);
         }
 
         // display appropriate guess button LinearLayouts
-        for (int row = 0; row < guessRows; row++){
+        for (int row = 0; row < guessRows; row++) {
             guessLinearLayouts[row].setVisibility(View.VISIBLE);
         }
     }
@@ -121,8 +122,7 @@ public class QuizActivityFragment extends Fragment {
                     fileNameList.add(path.replace(".png", ""));
                 }
             }
-        }
-        catch (IOException exception) {
+        } catch (IOException exception) {
             Log.e(TAG, "Error loading file names", exception);
         }
 
@@ -171,9 +171,8 @@ public class QuizActivityFragment extends Fragment {
             // load the asset as a drawable and display on flagImageView
             Drawable flag = Drawable.createFromStream(stream, nextImage);
             flagImageView.setImageDrawable(flag);
-        }
-        catch (IOException exception) {
-            Log.e(TAG, "Error Loading" + nextImage, exception)
+        } catch (IOException exception) {
+            Log.e(TAG, "Error Loading" + nextImage, exception);
         }
 
         Collections.shuffle(fileNameList); // shuffle file names
@@ -198,13 +197,18 @@ public class QuizActivityFragment extends Fragment {
 
         // randomly replace one button with correct answer
         int row = random.nextInt(guessRows); // pick random row
-        int col = random.nextInt(2) // pick random column
+        int col = random.nextInt(2); // pick random column
         LinearLayout randomRow = guessLinearLayouts[row]; // get the row
         String countryName = getCountryName(correctAnswer);
         ((Button) randomRow.getChildAt(col)).setText(countryName);
     }
 
-    private OnClickListener guessButtonListener = new OnClickListener() {
+    private String getCountryName(String countryName) {
+        return countryName.replace(" ", "");
+    }
+
+
+    private View.OnClickListener guessButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Button guessButton = ((Button) v);
@@ -216,7 +220,7 @@ public class QuizActivityFragment extends Fragment {
                 ++correctAnswers; // increment # of correct answers
 
                 //display correct answer in green text
-                answerTextView.setText(answer + "!");,,
+                answerTextView.setText(answer + "!");
                 answerTextView.setTextColor(getResources().getColor(R.color.correct_answer,
                         getContext().getTheme()));
 
@@ -251,4 +255,14 @@ public class QuizActivityFragment extends Fragment {
             }
         }
     };
+
+    private void disableButtons() {
+        for (int row = 0; row < guessRows; row++) {
+            for (int col = 0; col < guessLinearLayouts[row].getChildCount(); col++) {
+                Button guessButton = (Button) guessLinearLayouts[row].getChildAt(col);
+                guessButton.setClickable(false);
+                guessButton.setEnabled(false);
+            }
+        }
+    }
 }
