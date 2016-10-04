@@ -203,8 +203,9 @@ public class QuizActivityFragment extends Fragment {
         ((Button) randomRow.getChildAt(col)).setText(countryName);
     }
 
-    private String getCountryName(String countryName) {
-        return countryName.replace(" ", "");
+    private String getCountryName(String name) {
+        String countryName = name.substring(name.indexOf('-' + 1));
+        return countryName.replace('_', ' ');
     }
 
 
@@ -251,18 +252,34 @@ public class QuizActivityFragment extends Fragment {
                                     return builder.create();
                                 }
                             };
+                    quizResults.setCancelable(false);
+                    quizResults.show(getFragmentManager(), "quiz results");
                 }
+                else { // answer is correct but quiz not over
+                    // load next flag after 2s delay
+                    handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                loadNextFlag();
+                                            }
+                                        }, 2000); // 2000ms for a 2s delay
+                }
+            }
+            else { //answer was incorrect
+                // display "Incorrect!" in red
+                answerTextView.setText(R.string.incorrect_answer);
+                answerTextView.setTextColor(getResources().getColor(R.color.incorrect_answer,
+                        getContext().getTheme()));
+                guessButton.setEnabled(false);
             }
         }
     };
 
     private void disableButtons() {
         for (int row = 0; row < guessRows; row++) {
-            for (int col = 0; col < guessLinearLayouts[row].getChildCount(); col++) {
-                Button guessButton = (Button) guessLinearLayouts[row].getChildAt(col);
-                guessButton.setClickable(false);
-                guessButton.setEnabled(false);
-            }
+            LinearLayout guessRow = guessLinearLayouts[row];
+            for (int i = 0; i < guessRow.getChildCount(); i++)
+                guessRow.getChildAt(i).setEnabled(false);
         }
     }
 }
