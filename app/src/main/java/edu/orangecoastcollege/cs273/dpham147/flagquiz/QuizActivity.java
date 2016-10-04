@@ -102,7 +102,8 @@ public class QuizActivity extends AppCompatActivity {
                 if (key.equals(CHOICES)) { // # of choices to display changed
                     quizFragment.updateGuessRows(sharedPreferences);
                     quizFragment.resetQuiz();
-                } else if (key.equals(REGIONS)) { // regions to include changed
+                }
+                else if (key.equals(REGIONS)) { // regions to include changed
                     Set<String> regions = sharedPreferences.getStringSet(REGIONS, null);
 
                     if (regions != null && regions.size() > 0) {
