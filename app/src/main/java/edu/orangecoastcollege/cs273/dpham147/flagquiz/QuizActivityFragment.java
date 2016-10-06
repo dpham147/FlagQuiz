@@ -160,7 +160,7 @@ public class QuizActivityFragment extends Fragment {
         questionNumberTextView.setText(getString(R.string.question, correctAnswers + 1, FLAGS_IN_QUIZ));
 
         // extract the region from the next image's name
-        String region = nextImage.substring(0, nextImage.indexOf("_"));
+        String region = nextImage.substring(0, nextImage.indexOf("-"));
 
         // use assetmanager to load the next image from assets folder
         AssetManager assets = getActivity().getAssets();
@@ -215,10 +215,10 @@ public class QuizActivityFragment extends Fragment {
             Button guessButton = ((Button) v);
             String guess = guessButton.getText().toString();
             String answer = getCountryName(correctAnswer);
-            ++ totalGuesses;
+            totalGuesses++;
 
             if (guess.equals(correctAnswer)) { // if guess is correct
-                ++correctAnswers; // increment # of correct answers
+                correctAnswers++; // increment # of correct answers
 
                 //display correct answer in green text
                 answerTextView.setText(answer + "!");
@@ -230,28 +230,25 @@ public class QuizActivityFragment extends Fragment {
                 // if the user has correctly identified FLAGS_IN_QUIZ flags
                 if (correctAnswers == FLAGS_IN_QUIZ) {
                     // Dialogfragment to display quiz results and start a new quiz
-                    DialogFragment quizResults =
-                            new DialogFragment() {
-                                // create an alert dialog and return it
-                                @Override
-                                public Dialog onCreateDialog(Bundle bundle) {
-                                    AlertDialog.Builder builder =
-                                            new AlertDialog.Builder(getActivity());
-                                    builder.setMessage(getString(R.string.results,
-                                            totalGuesses, (1000 / (double) totalGuesses)));
+                    DialogFragment quizResults = new DialogFragment() {
+                        // create an alert dialog and return it
+                        @Override
+                        public Dialog onCreateDialog(Bundle bundle) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setMessage(getString(R.string.results,
+                                    totalGuesses, (1000 / (double) totalGuesses)));
 
-                                    // reset quiz button
-                                    builder.setPositiveButton(R.string.reset_quiz,
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id){
-                                                    resetQuiz();
-                                                }
-                                            }
-                                    );
+                            // reset quiz button
+                            builder.setPositiveButton(R.string.reset_quiz, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id){
+                                            resetQuiz();
+                                        }
+                                    }
+                            );
 
-                                    return builder.create();
-                                }
-                            };
+                            return builder.create();
+                        }
+                    };
                     quizResults.setCancelable(false);
                     quizResults.show(getFragmentManager(), "quiz results");
                 }
